@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/openshift/origin/test/extended/cluster/metrics"
 	"github.com/redhat-performance/pbench-analyzer/pkg/result"
 	"github.com/redhat-performance/pbench-analyzer/pkg/utils"
 )
@@ -17,6 +18,7 @@ type config struct {
 	resultDir  string
 	fileHeader map[string][]string
 	hosts      []result.Host
+	Metrics    []metrics.Metrics
 	keys       []string
 }
 
@@ -122,6 +124,13 @@ func (c *config) Process() {
 			}
 		}
 	}
+
+	var m []metrics.Metrics
+	err := utils.GetMetics(c.searchDir, &m)
+	if err != nil {
+		fmt.Printf("Error getting Metics %v\n", err)
+	}
+	c.Metrics = m
 }
 
 // WriteToDisk will write the results to disk as a CSV and a JSON file
@@ -131,7 +140,7 @@ func (c *config) WriteToDisk() error {
 		return err
 	}
 
-	err = utils.WriteJSON(c.resultDir, c.hosts)
+	err = utils.WriteJSON(c.resultDir, result.Result{Hosts: c.hosts, Metrics: c.Metrics})
 	if err != nil {
 		return err
 	}
