@@ -62,7 +62,7 @@ func GetMetics(searchDir string, m *[]metrics.Metrics) error {
 	for _, jsonBytes := range r.FindAll(bytes, -1) {
 		err := json.Unmarshal(jsonBytes, &bm)
 		if err != nil {
-			fmt.Printf("cannot unmarshal the line '%v' for BaseMetrics: %v\n", string(jsonBytes), err)
+			fmt.Printf("cannot unmarshal the line '%s' for BaseMetrics: %v\n", jsonBytes, err)
 		}
 
 		switch bm.Type {
@@ -70,11 +70,11 @@ func GetMetics(searchDir string, m *[]metrics.Metrics) error {
 			var td metrics.TestDuration
 			err := json.Unmarshal(jsonBytes, &td)
 			if err != nil {
-				fmt.Printf("cannot unmarshal the line '%v' for TestDuration: %v\n", string(jsonBytes), err)
+				fmt.Printf("cannot unmarshal the line '%s' for TestDuration: %v\n", jsonBytes, err)
 			}
 			*m = append(*m, td)
 		default:
-			fmt.Printf("unsupported metrics type %v in line: %v\n", bm.Type, string(jsonBytes))
+			fmt.Printf("unsupported metrics type %v in line: %s\n", bm.Type, jsonBytes)
 		}
 	}
 
