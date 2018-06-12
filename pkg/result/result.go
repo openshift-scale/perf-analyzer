@@ -7,8 +7,14 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/openshift/origin/test/extended/cluster/metrics"
 	"github.com/redhat-performance/pbench-analyzer/pkg/stats"
 )
+
+type Result struct {
+	Hosts   []Host
+	Metrics []metrics.Metrics
+}
 
 // Host struct of a Kind has a ResultDir and a list of Results
 type Host struct {

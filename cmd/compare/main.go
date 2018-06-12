@@ -51,34 +51,39 @@ func main() {
 		return
 	}
 
-	if !areResultsSimilar(oldRun, newRun) {
+	if !areHostResultsSimilar(oldRun.Hosts, newRun.Hosts) {
 		fmt.Fprintf(os.Stderr, "Results do not have the same number of hosts and/or results per host.\n")
 		return
 	}
 
-	for i := range oldRun {
-		for j := range oldRun[i].Results {
-			if newRun[i].Results[j].Pct95 > oldRun[i].Results[j].Pct95*(1+stdDev) ||
-				newRun[i].Results[j].Pct95 < oldRun[i].Results[j].Pct95*(1-stdDev) {
-				fmt.Printf("%s: Out of spec %s process with %s\n", newRun[i].Kind, newRun[i].Results[j].Kind, newRun[i].Results[j].Resource)
+	for i := range oldRun.Hosts {
+		for j := range oldRun.Hosts[i].Results {
+			if newRun.Hosts[i].Results[j].Pct95 > oldRun.Hosts[i].Results[j].Pct95*(1+stdDev) ||
+				newRun.Hosts[i].Results[j].Pct95 < oldRun.Hosts[i].Results[j].Pct95*(1-stdDev) {
+				fmt.Printf("%s: Out of spec %s process with %s\n", newRun.Hosts[i].Kind, newRun.Hosts[i].Results[j].Kind, newRun.Hosts[i].Results[j].Resource)
 				return
 			}
 		}
 	}
+
+	// TODO compare metrics?
 }
 
-func readResultJSON(file string) ([]result.Host, error) {
-	var res []result.Host
+func readResultJSON(file string) (*result.Result, error) {
+	var res result.Result
 	raw, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
 
-	json.Unmarshal(raw, &res)
-	return res, nil
+	err = json.Unmarshal(raw, &res)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
 
-func areResultsSimilar(old, new []result.Host) bool {
+func areHostResultsSimilar(old, new []result.Host) bool {
 	if len(old) != len(new) {
 		return false
 	}
