@@ -61,7 +61,7 @@ func (c *config) addHeaders(blockString, netString, processString string) {
 func (c *config) InitHosts() {
 	// This regexp matches the prefix to each pbench host result directory name
 	// which indicates host type. (ie. svt-master-1:pbench-benchmark-001/)
-	hostRegex := regexp.MustCompile(`svt[_-][elmn]\w*[_-]\d`)
+	hostRegex := regexp.MustCompile(`svt[_-][ceilmn]\w*[_-]\d`)
 	// Return directory listing of searchDir
 	dirList, err := ioutil.ReadDir(c.searchDir)
 	if err != nil {
@@ -126,11 +126,12 @@ func (c *config) Process() {
 	}
 
 	var m []metrics.Metrics
-	err := utils.GetMetics(c.searchDir, &m)
+	err := utils.GetMetrics(c.searchDir, &m)
 	if err != nil {
-		fmt.Printf("Error getting Metics %v\n", err)
+		fmt.Printf("Error getting Metrics: %v\n", err)
+	} else {
+		c.Metrics = m
 	}
-	c.Metrics = m
 }
 
 // WriteToDisk will write the results to disk as a CSV and a JSON file

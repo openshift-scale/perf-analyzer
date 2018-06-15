@@ -13,7 +13,7 @@ import (
 
 type Result struct {
 	Hosts   []Host
-	Metrics []metrics.Metrics
+	Metrics []metrics.BaseMetrics
 }
 
 // Host struct of a Kind has a ResultDir and a list of Results
