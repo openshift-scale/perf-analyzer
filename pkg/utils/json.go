@@ -47,7 +47,7 @@ func removeNaN(hosts []result.Host) []result.Host {
 	return newHosts
 }
 
-func GetMetics(searchDir string, m *[]metrics.Metrics) error {
+func GetMetrics(searchDir string, m *[]metrics.Metrics) error {
 	resultFilePath := path.Join(path.Dir(path.Clean(searchDir)), "result.txt")
 
 	bytes, err := ioutil.ReadFile(resultFilePath)
@@ -79,7 +79,7 @@ func GetMetics(searchDir string, m *[]metrics.Metrics) error {
 	}
 
 	if len(*m) == 0 {
-		fmt.Printf("Cannot find metrics in file: %s\n", resultFilePath)
+		return fmt.Errorf("cannot find metrics in file: %s\n", resultFilePath)
 	}
 
 	return nil
