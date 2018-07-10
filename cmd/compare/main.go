@@ -41,32 +41,56 @@ func main() {
 
 	oldRun, err := readResultJSON(oldFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading file \"%v\"\n", oldFile)
+		fmt.Fprintf(os.Stderr, "Error reading file \"%v\": %s\n", oldFile, err)
 		return
 	}
 
 	newRun, err := readResultJSON(newFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading file \"%v\"\n", newFile)
-		return
-	}
-
-	if !areHostResultsSimilar(oldRun.Hosts, newRun.Hosts) {
-		fmt.Fprintf(os.Stderr, "Results do not have the same number of hosts and/or results per host.\n")
+		fmt.Fprintf(os.Stderr, "Error reading file \"%v\": %s\n", newFile, err)
 		return
 	}
 
 	for i := range oldRun.Hosts {
+		k, err := getHostIndex(newRun.Hosts, oldRun.Hosts[i].Kind)
+		if err != nil {
+			fmt.Printf("Error: %s\n", err)
+			continue
+		}
 		for j := range oldRun.Hosts[i].Results {
-			if newRun.Hosts[i].Results[j].Pct95 > oldRun.Hosts[i].Results[j].Pct95*(1+stdDev) ||
-				newRun.Hosts[i].Results[j].Pct95 < oldRun.Hosts[i].Results[j].Pct95*(1-stdDev) {
-				fmt.Printf("%s: Out of spec %s process with %s\n", newRun.Hosts[i].Kind, newRun.Hosts[i].Results[j].Kind, newRun.Hosts[i].Results[j].Resource)
-				return
+			l, err := getResultIndex(newRun.Hosts[k], oldRun.Hosts[i].Results[j])
+			if err != nil {
+				fmt.Printf("Error: %s\n", err)
+				continue
+			}
+			if newRun.Hosts[k].Results[l].Pct95 > oldRun.Hosts[i].Results[j].Pct95*(1+stdDev) ||
+				newRun.Hosts[k].Results[l].Pct95 < oldRun.Hosts[i].Results[j].Pct95*(1-stdDev) {
+				fmt.Printf("%s: Out of spec %s process with %s, old: %.2f => new: %.2f\n", newRun.Hosts[k].Kind, newRun.Hosts[k].Results[l].Kind, newRun.Hosts[k].Results[l].Resource, oldRun.Hosts[i].Results[j].Pct95, newRun.Hosts[k].Results[l].Pct95)
 			}
 		}
 	}
 
 	// TODO compare metrics?
+}
+
+func getHostIndex(hostResult []result.Host, kind string) (int, error) {
+	for h := range hostResult {
+		if hostResult[h].Kind == kind {
+			return h, nil
+		}
+	}
+	return 0, fmt.Errorf("Host type %s not found.", kind)
+}
+
+func getResultIndex(hostResult result.Host, resultItem result.ResultType) (int, error) {
+	for r := range hostResult.Results {
+		if hostResult.Results[r].Kind == resultItem.Kind &&
+			hostResult.Results[r].Resource == resultItem.Resource {
+			return r, nil
+		}
+	}
+	return 0, fmt.Errorf("Result index for %s, %s not found", resultItem.Kind, resultItem.Resource)
+
 }
 
 func readResultJSON(file string) (*result.Result, error) {
