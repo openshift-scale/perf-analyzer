@@ -12,6 +12,7 @@ import (
 
 var oldFile, newFile string
 var stdDev float64
+var procAlias map[string]string
 
 func initFlags() {
 	flag.StringVar(&oldFile, "old", "", "Previous run summary")
@@ -25,6 +26,8 @@ func main() {
 	var files []string
 	files = append(files, oldFile)
 	files = append(files, newFile)
+	procAlias = make(map[string]string)
+	procAlias["openshift_start_node_"] = "hyperkube_kubelet_"
 
 	if oldFile == "" && newFile == "" {
 		fmt.Fprintf(os.Stderr, "Must specify both old and new run data:\n")
@@ -84,7 +87,8 @@ func getHostIndex(hostResult []result.Host, kind string) (int, error) {
 
 func getResultIndex(hostResult result.Host, resultItem result.ResultType) (int, error) {
 	for r := range hostResult.Results {
-		if hostResult.Results[r].Kind == resultItem.Kind &&
+		if (hostResult.Results[r].Kind == resultItem.Kind ||
+			hostResult.Results[r].Kind == procAlias[resultItem.Kind]) &&
 			hostResult.Results[r].Resource == resultItem.Resource {
 			return r, nil
 		}
