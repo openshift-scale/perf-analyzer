@@ -1,9 +1,9 @@
-# pbench-analyzer
+# perf-analyzer
 
-CI-friendly golang tool for parsing the output of time series data created by [pbench](https://github.com/distributed-system-analysis/pbench) in CSV format.
+CI-friendly golang tool for parsing the output of time series data created by [pbench](https://github.com/distributed-system-analysis/pbench) in CSV format, as well as from [prometheus](https://github.com/prometheus/prometheus) directly.
 
 ```
-Usage of ./pbench-analyzer:
+Usage of ./perf-analyzer:
   -blkdev value
         List of block devices
   -i string
@@ -18,7 +18,7 @@ Usage of ./pbench-analyzer:
 
 Example command:
 ```
-./pbench-analyzer -i ~/work/pbench-result/tools-default/ -o ~/data/ -blkdev vda-write -blkdev xvdb -netdev eth0-rx -netdev eth0-tx
+./perf-analyzer -i ~/work/pbench-result/tools-default/ -o ~/data/ -blkdev vda-write -blkdev xvdb -netdev eth0-rx -netdev eth0-tx
 ```
 
 `blkdev` represents a single block device name, to add more than one block device, you will need to pass the flag again per device, as above
