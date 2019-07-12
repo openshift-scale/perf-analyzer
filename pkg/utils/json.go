@@ -9,7 +9,7 @@ import (
 	"regexp"
 
 	"github.com/openshift/origin/test/extended/cluster/metrics"
-	"github.com/redhat-performance/pbench-analyzer/pkg/result"
+	"github.com/openshift-scale/perf-analyzer/pkg/result"
 )
 
 // WriteJSON will output all the calculated results to JSON file

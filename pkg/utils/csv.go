@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/redhat-performance/pbench-analyzer/pkg/result"
+	"github.com/openshift-scale/perf-analyzer/pkg/result"
 )
 
 // WriteCSV will write the result data to a CSV file

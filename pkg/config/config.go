@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/openshift/origin/test/extended/cluster/metrics"
-	"github.com/redhat-performance/pbench-analyzer/pkg/result"
-	"github.com/redhat-performance/pbench-analyzer/pkg/utils"
+	"github.com/openshift-scale/perf-analyzer/pkg/result"
+	"github.com/openshift-scale/perf-analyzer/pkg/utils"
 )
 
 type config struct {
