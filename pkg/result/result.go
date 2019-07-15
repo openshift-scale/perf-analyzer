@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/openshift/origin/test/extended/cluster/metrics"
-	"github.com/redhat-performance/pbench-analyzer/pkg/stats"
+	"github.com/openshift-scale/perf-analyzer/pkg/stats"
 )
 
 type Result struct {

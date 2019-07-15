@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/redhat-performance/pbench-analyzer/pkg/config"
+	"github.com/openshift-scale/perf-analyzer/pkg/config"
 )
 
 var searchDir, resultDir, processString, netString, blockString string

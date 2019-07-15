@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/redhat-performance/pbench-analyzer/pkg/result"
+	"github.com/openshift-scale/perf-analyzer/pkg/result"
 )
 
 var oldFile, newFile string
