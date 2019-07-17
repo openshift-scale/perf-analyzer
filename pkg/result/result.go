@@ -7,13 +7,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/openshift/origin/test/extended/cluster/metrics"
 	"github.com/openshift-scale/perf-analyzer/pkg/stats"
+	"github.com/openshift/origin/test/extended/cluster/metrics"
 )
 
+// Result struct contains the host results as well as the metrics
 type Result struct {
 	Hosts   []Host
-	Metrics []metrics.BaseMetrics
+	Metrics []metrics.Metrics
 }
 
 // Host struct of a Kind has a ResultDir and a list of Results
