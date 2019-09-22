@@ -8,10 +8,25 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/openshift/origin/test/extended/cluster/metrics"
 	"github.com/openshift-scale/perf-analyzer/pkg/result"
 	"github.com/openshift-scale/perf-analyzer/pkg/utils"
+	"github.com/openshift/origin/test/extended/cluster/metrics"
 )
+
+type ScrapeConfig struct {
+	EnablePrometheusFlag bool
+	EnablePbenchFlag     bool
+	InsecureTLSFlag      bool
+	DurationFlag         int
+	BlockString          string
+	NetString            string
+	ProcessString        string
+	ResultDir            string
+	SearchDir            string
+	StepFlag             string
+	TokenFlag            string
+	UrlFlag              string
+}
 
 type config struct {
 	searchDir  string
@@ -23,13 +38,16 @@ type config struct {
 }
 
 // NewConfig returns a new configuration struct that contains all fields that we need
-func NewConfig(search, result, block, net, process string) config {
-	c := config{
-		searchDir:  utils.TrailingSlash(search),
-		resultDir:  utils.TrailingSlash(result),
-		fileHeader: map[string][]string{},
+func NewConfig(cfg ScrapeConfig) config {
+	var c config
+	if cfg.EnablePbenchFlag {
+		c = config{
+			searchDir:  utils.TrailingSlash(cfg.SearchDir),
+			resultDir:  utils.TrailingSlash(cfg.ResultDir),
+			fileHeader: map[string][]string{},
+		}
+		c.addHeaders(cfg.BlockString, cfg.NetString, cfg.ProcessString)
 	}
-	c.addHeaders(block, net, process)
 
 	return c
 }
@@ -58,7 +76,7 @@ func (c *config) addHeaders(blockString, netString, processString string) {
 }
 
 // InitHosts will create the initial host structures with the Kind and ResultDir for each
-func (c *config) InitHosts() {
+func (c *config) Init() {
 	// This regexp matches the prefix to each pbench host result directory name
 	// which indicates host type. (ie. svt-master-1:pbench-benchmark-001/)
 	hostRegex := regexp.MustCompile(`svt[_-][ceilmn]\w*[_-]\d`)
